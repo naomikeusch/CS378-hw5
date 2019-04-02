@@ -1,28 +1,18 @@
-#THIS CODE IS MY OWN WORK, IT WAS WRITTEN WITHOUT CONSULTING A TUTOR OR CODE
-#WRITTEN BY OTHER STUDENTS - NAOMI KEUSCH BAKER AND DORIS ZHOU
-
-#Sources:
-#http://stanford.edu/~cpiech/cs221/handouts/kmeans.html
-#https://www.geeksforgeeks.org/python-pandas-dataframe/
-
 import numpy
 import pandas
+import random
+import sys
 
 MAX_ITERATIONS = 10
-df_full = pandas.read_csv('iris.data', sep=',', header=None)
-df = df_full.drop(df_full.columns[4], axis=1)
-numObjects = max(df.index.values)+1
+
 def main():
-    
-    print(getLabels('iris.data', 0))
-    
-	#first = numpy.sqrt(((df - df.iloc[2])**2).sum(axis=1))
-    #list = first.tolist()
-    #result = min(first)
-    #print(list)
-    #print(result)
-    #print(list.index(result))
-    
+    dataSet = sys.argv[1]
+    k = int(sys.argv[2])
+    outPut = sys.argv[3]
+    df_full = pandas.read_csv(dataSet, sep=',', header=None)
+    df = df_full.drop(df_full.columns[4], axis=1)
+    print(df)
+    kmeans(df, k)
 
 # Function: K Means
 # -------------
@@ -31,33 +21,31 @@ def main():
 # dataset which are similar to one another).
 def kmeans(dataSet, k):
     # Initialize centroids randomly
-    numFeatures = dataSet.getNumFeatures()
-    centroids = getRandomCentroids(numFeatures, k)
-
+    
+    centroids = getRandomCentroids(dataSet, k)
+    print(centroids)
     # Initialize book keeping vars.
     iterations = 0
     oldCentroids = None
 
     # Run the main k-means algorithm
-    while not shouldStop(oldCentroids, centroids, iterations):
-        # Save old centroids for convergence test. Book keeping.
-        oldCentroids = centroids
-        iterations += 1
+    # while not shouldStop(oldCentroids, centroids, iterations):
+        # # Save old centroids for convergence test. Book keeping.
+        # oldCentroids = centroids
+        # iterations += 1
 
-        # Assign labels to each datapoint based on centroids
-        labels = getLabels(dataSet, centroids)
+        # # Assign labels to each datapoint based on centroids
+    labels = getLabels(dataSet, centroids, k)
 
-        # Assign centroids based on datapoint labels
-        centroids = getCentroids(dataSet, labels, k)
+        # # Assign centroids based on datapoint labels
+        # centroids = getCentroids(dataSet, labels, k)
 
-    # We can get the labels too by calling getLabels(dataSet, centroids)
+    # # We can get the labels too by calling getLabels(dataSet, centroids)
     return centroids
-	
-	#print(np.sqrt(((
 
 
-def getRandomCentroids(numFeatures, k):
-    print('')
+def getRandomCentroids(dataSet, k):
+    return dataSet.sample(3)
 
 
 # Function: Should Stop
@@ -73,23 +61,19 @@ def shouldStop(oldCentroids, centroids, iterations):
 # Function: Get Labels
 # -------------
 # Returns a label for each piece of data in the dataset.
-def getLabels(dataSet, centroids):
+def getLabels(df, centroids, k):
     # For each element in the dataset, chose the closest centroid.
     # Make that centroid the element's label.
 
     # Function: Get Centroids
     # -------------
     # Returns k random centroids, each of dimension n.
-
-    #Still working on this...
-    for x in range(k):
-	    for y in range(numObjects):
-            first = numpy.sqrt(((df.iloc[centroids(k)] - df.iloc[numObjects])**2).sum(axis=1))
-            list = first.tolist()
-            result = min(first)
-            print(list)
-            print(result)
-            print(list.index(result))
+    numObjects = max(df.index.values)
+    for x in range(numObjects):
+        first = numpy.sqrt(((centroids - df.iloc[x])**2).sum(axis=1))
+        list = first.tolist()
+        result = min(first)
+        print(list.index(result))
 
 
 
