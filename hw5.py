@@ -80,6 +80,8 @@ def getLabels(dataSet, centroids):
     # Function: Get Centroids
     # -------------
     # Returns k random centroids, each of dimension n.
+
+    #Still working on this...
     for x in range(k):
 	    for y in range(numObjects):
             first = numpy.sqrt(((df.iloc[centroids(k)] - df.iloc[numObjects])**2).sum(axis=1))
