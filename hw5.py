@@ -1,3 +1,11 @@
+#THIS CODE IS MY OWN WORK, IT WAS WRITTEN WITHOUT CONSULTING A TUTOR OR CODE
+#WRITTEN BY OTHER STUDENTS - NAOMI KEUSCH BAKER AND DORIS ZHOU
+
+#Sources:
+#http://stanford.edu/~cpiech/cs221/handouts/kmeans.html
+#https://www.geeksforgeeks.org/python-pandas-dataframe/
+#https://mubaris.com/posts/kmeans-clustering/
+
 import numpy
 import pandas
 import random
@@ -11,7 +19,7 @@ def main():
     outPut = sys.argv[3]
     df_full = pandas.read_csv(dataSet, sep=',', header=None)
     df = df_full.drop(df_full.columns[4], axis=1)
-    print(df)
+    #print(df)
     kmeans(df, k)
 
 # Function: K Means
@@ -21,9 +29,9 @@ def main():
 # dataset which are similar to one another).
 def kmeans(dataSet, k):
     # Initialize centroids randomly
-    
+    numObjects = max(dataSet.index.values)
     centroids = getRandomCentroids(dataSet, k)
-    print(centroids)
+    #print(centroids)
     # Initialize book keeping vars.
     iterations = 0
     oldCentroids = None
@@ -36,9 +44,10 @@ def kmeans(dataSet, k):
 
         # # Assign labels to each datapoint based on centroids
     labels = getLabels(dataSet, centroids, k)
+    #print(labels)
 
         # # Assign centroids based on datapoint labels
-        # centroids = getCentroids(dataSet, labels, k)
+    centroids = getCentroids(dataSet, labels, numObjects, k)
 
     # # We can get the labels too by calling getLabels(dataSet, centroids)
     return centroids
@@ -64,24 +73,28 @@ def shouldStop(oldCentroids, centroids, iterations):
 def getLabels(df, centroids, k):
     # For each element in the dataset, chose the closest centroid.
     # Make that centroid the element's label.
-
-    # Function: Get Centroids
-    # -------------
-    # Returns k random centroids, each of dimension n.
     numObjects = max(df.index.values)
+    labels = []
     for x in range(numObjects):
         first = numpy.sqrt(((centroids - df.iloc[x])**2).sum(axis=1))
         list = first.tolist()
         result = min(first)
-        print(list.index(result))
+        labels.extend([list.index(result)])
+    return labels
 
 
-
-def getCentroids(dataSet, labels, k):
+    # Function: Get Centroids
+    # -------------
+    # Returns k random centroids, each of dimension n.
+def getCentroids(df, labels, numObjects, k):
     # Each centroid is the geometric mean of the points that
     # have that centroid's label. Important: If a centroid is empty (no points have
     # that centroid's label) you should randomly re-initialize it.
-    print('')
+    
+    for i in range(k):
+        points = [df.iloc[j] for j in range(numObjects) if labels[j] == i]
+        labels[i] = numpy.mean(points, axis = 1)
+    print(labels)
 
 if __name__ == '__main__':
     main()
